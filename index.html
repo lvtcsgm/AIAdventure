@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI & CS Adventure Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .logo-font {
+            font-family: 'Russo One', sans-serif;
+        }
+        .gradient-bg {
+            /* Updated background to use the new bright green overlay */
+            background-image: linear-gradient(rgba(0, 255, 0, 0.7), rgba(0, 255, 0, 0.7)), url('https://images.pexels.com/photos/924824/pexels-photo-924824.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .choice-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .choice-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .choice-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        /* Styles for career emojis */
+        .career-emoji {
+            font-size: 3.5rem; /* 56px */
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+
+    <main class="w-full max-w-md mx-auto">
+        <div id="game-container" class="card rounded-2xl shadow-2xl p-6 text-center flex flex-col items-center">
+            
+            <!-- Title and Subtitle -->
+            <div id="title-screen">
+                <h1 class="text-3xl sm:text-4xl font-bold text-green-600 mb-2">Your AI Adventure!</h1>
+                <p class="text-xl text-green-600 font-semibold">Learn to code, change the world®.</p>
+                <a href="https://www.thecoderschool.com/" target="_blank" class="inline-block mt-2 no-underline">
+                    <p class="logo-font text-3xl text-gray-800 tracking-wider">theCoderSchool</p>
+                </a>
+                <p class="text-gray-600 mt-4 mb-8">Make choices to see how code and AI can help you solve problems and shape the future!</p>
+                <button id="startBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+                    Start Adventure
+                </button>
+            </div>
+
+            <!-- Game Content Area -->
+            <div id="game-content" class="hidden w-full">
+                <div id="scenario-container" class="text-lg text-gray-700 mb-6 min-h-[150px]"></div>
+                <div id="choices-container" class="w-full flex flex-col gap-4">
+                    <!-- Buttons will be generated here -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Element References ---
+            const titleScreen = document.getElementById('title-screen');
+            const gameContent = document.getElementById('game-content');
+            const startBtn = document.getElementById('startBtn');
+            const scenarioContainer = document.getElementById('scenario-container');
+            const choicesContainer = document.getElementById('choices-container');
+
+            let currentStage = 'start';
+
+            // --- Game Story and Choices ---
+            const gameData = {
+                'start': {
+                    scenario: "Oh no! Your best friend's puppy, Sparky<span style='font-size: 1.5em;'>🐶</span>, has run off at the park. How can you find him?",
+                    choices: [
+                        { text: "Build a search drone", next: "drone" },
+                        { text: "Ask your friends for help", next: "friends" }
+                    ]
+                },
+                'drone': {
+                    scenario: "Amazing idea! You code a small drone to fly over the park. You use AI Image Recognition <span style='font-size: 1.5em;'>🖼️</span> to teach it what Sparky<span style='font-size: 1.5em;'>🐶</span> looks like. The drone spots him near the slide! This is how AI helps solve real-world problems.",
+                    choices: [
+                        { text: "What's next?", next: "gameDev" }
+                    ]
+                },
+                'friends': {
+                    scenario: "Good thinking! Teamwork is key. You all search and find Sparky<span style='font-size: 1.5em;'>🐶</span>. Later, you think, 'What if we had an app to help?' You've just discovered the first step of Computational Thinking <span style='font-size: 1.5em;'>🤔</span>: defining a problem!",
+                    choices: [
+                        { text: "Continue the story", next: "gameDev" }
+                    ]
+                },
+                'gameDev': {
+                    scenario: "Later that day, you feel bored. What do you do?",
+                    choices: [
+                        { text: "Design your own video game", next: "createGame" },
+                        { text: "Watch videos online", next: "watchVideos" }
+                    ]
+                },
+                'createGame': {
+                    scenario: "You use a simple coding language to create a fun platformer game. You've turned your creativity into something real! That's the power of Computer Science <span style='font-size: 1.5em;'>💻</span>: building new worlds from your imagination.",
+                    choices: [
+                        { text: "What's the final challenge?", next: "grandma" }
+                    ]
+                },
+                'watchVideos': {
+                    scenario: "You watch some fun videos. Have you ever wondered how the website knows what to recommend? It uses an AI Algorithm <span style='font-size: 1.5em;'>⚙️</span> to learn what you like. Code is working behind the scenes everywhere!",
+                    choices: [
+                        { text: "What happens next?", next: "grandma" }
+                    ]
+                },
+                'grandma': {
+                    scenario: "You visit your grandma. She sometimes forgets to take her medicine. How could technology help?",
+                    choices: [
+                        { text: "Create a smart reminder system", next: "smartHome" }
+                    ]
+                },
+                'smartHome': {
+                    scenario: "You use a small computer to build a device that lights up and plays a happy song when it's medicine time. This is like a Smart Device <span style='font-size: 1.5em;'>💡</span>! You used code to care for someone you love.",
+                    choices: [
+                        { text: "See your impact!", next: "end" }
+                    ]
+                },
+                'end': {
+                    scenario: `
+                        <p class="mb-4">You've used your skills like a real...</p>
+                        <div class="flex justify-around text-center">
+                            <div>
+                                <div class="career-emoji">🧠</div>
+                                <p class="font-semibold">AI Engineer</p>
+                            </div>
+                            <div>
+                                <div class="career-emoji">🎮</div>
+                                <p class="font-semibold">Game Developer</p>
+                            </div>
+                            <div>
+                                <div class="career-emoji">🤖</div>
+                                <p class="font-semibold">Robotics Programmer</p>
+                            </div>
+                        </div>
+                        <p class="mt-4">These are all amazing careers you could have one day. Keep learning, and you can truly change the world with code!</p>
+                    `,
+                    choices: [
+                        { text: "Play Again", next: "start" }
+                    ]
+                }
+            };
+
+            // --- Function to Start/Update the Game ---
+            function updateGame(stage) {
+                currentStage = stage;
+                const stageData = gameData[stage];
+
+                // Update the scenario text
+                scenarioContainer.innerHTML = stageData.scenario;
+
+                // Clear old choices
+                choicesContainer.innerHTML = '';
+
+                // Create new choice buttons
+                stageData.choices.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.textContent = choice.text;
+                    button.classList.add('choice-btn', 'w-full', 'bg-teal-600', 'hover:bg-teal-700', 'text-white', 'font-bold', 'py-4', 'px-6', 'rounded-full', 'text-lg', 'shadow-md');
+                    button.addEventListener('click', () => updateGame(choice.next));
+                    choicesContainer.appendChild(button);
+                });
+
+                // If it's the end, the "Play Again" button should restart the game view
+                if (stage === 'end') {
+                    const playAgainBtn = choicesContainer.querySelector('button');
+                    playAgainBtn.addEventListener('click', (e) => {
+                        e.preventDefault(); // prevent default update
+                        titleScreen.classList.remove('hidden');
+                        gameContent.classList.add('hidden');
+                    });
+                }
+            }
+            
+            // --- Event Listener for the Start Button ---
+            startBtn.addEventListener('click', () => {
+                titleScreen.classList.add('hidden');
+                gameContent.classList.remove('hidden');
+                updateGame('start');
+            });
+        });
+    </script>
+</body>
+</html>
